@@ -2,10 +2,27 @@ import React from "react";
 import { Link } from "react-router-dom";
 import Profile from "../assets/profile.png";
 import style from '../style/username.module.css';
+import { Toaster } from 'react-hot-toast';            // To make website intractive
+import { useFormik } from 'formik';                   // For validation
+import { passwordValidate } from "../helper/validate";
 
-export default function Username() {
+export default function Password() {
+
+    const formik = useFormik({
+        initialValues : {
+            password : ""
+        },
+        validate: passwordValidate,
+        validateOnBlur : false,
+        validateOnChange : false,
+        onSubmit : async (values) => {
+            console.log(values);
+        }
+    })
+
     return(
         <div className="container mx-auto">
+            <Toaster position="top-center" reverseOrder={false}></Toaster>
             <duv className="flex justify-center items-center h-screen">
                 <div className={style.glass}>
                     <div className="title flex flex-col justify-center items-center">
@@ -15,13 +32,13 @@ export default function Username() {
                         </span>
                     </div>
 
-                    <form className="py-1">
+                    <form className="py-1" onSubmit={formik.handleSubmit}>
                         <div className="profile flex justify-center py-4">
                             <img className={style.profile_img} src={Profile} />
                         </div>
 
                         <div className="textbox flex justify-center items-center flex-col gap-6">
-                            <input type="password" placeholder="Password" className={style.textbox}/>
+                            <input {...formik.getFieldProps('password')} type="password" placeholder="Password" className={style.textbox}/>
                             <button type="submit" className={style.btn}>Sign In</button>
                         </div>
 

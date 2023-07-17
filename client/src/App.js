@@ -4,7 +4,7 @@ import {createBrowserRouter, RouterProvider} from 'react-router-dom';
 // Import all Components
 import PageNotFound from "./components/PageNotFound";
 import Password from "./components/Password";
-import Profile from "./components/Profile";
+import Profiles from "./components/Profile";
 import Recovery from "./components/Recovery";
 import Register from "./components/Register";
 import Reset from "./components/Reset";
@@ -34,7 +34,7 @@ const router = createBrowserRouter([
     },
     {
         path : '/profile',
-        element : <Profile></Profile>
+        element : <Profiles></Profiles>
     },
     {
         path : '*',

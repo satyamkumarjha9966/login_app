@@ -187,6 +187,11 @@ const updateuser = async (req, res) => {
 
 const resetPassword = async (req, res) => {
     try {
+
+        if (!req.app.locals.resetSession) {
+            res.status(440).send({message: "Session Expired!"});
+        }
+
         const { username, password } = req.body;
 
         try {
@@ -194,9 +199,11 @@ const resetPassword = async (req, res) => {
             if (!user) {
                 res.send(404).send({error : "Username Not Found"});
             }
-            const hashPassword = bcrypt.hash(password, 8);
+            const hashPassword = await bcrypt.hash(password, 8);
 
-            const updatedPassword = await UserModel.updateOne({username : user.username}, {password : hashPassword})
+            const updatedPassword = await UserModel.updateOne({username : user.username}, {password : hashPassword});
+
+            req.app.locals.resetSession = false;    // Reset Session
 
             res.status(200).send({
                 success : true,
@@ -205,11 +212,11 @@ const resetPassword = async (req, res) => {
             });
 
         } catch (error) {
-            return res.status(401).send({error});
+            return res.status(401).send({error : "Something Wrong"});
         }
         
     } catch (error) {
-        return res.status(401).send({error});
+        return res.status(401).send({error : "Some Error Occured, Pls Try Again!"});
     }
 };
 

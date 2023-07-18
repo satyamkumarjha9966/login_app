@@ -24,7 +24,7 @@ router.get('/createResetSession', createResetSession);
 // Put Methods
 router.put('/updateuser', auth, updateuser);
 
-router.put('/resetPassword', resetPassword);
+router.put('/resetPassword', verifyUser, resetPassword);
 
 export default router;
 

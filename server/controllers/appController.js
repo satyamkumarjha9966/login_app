@@ -93,10 +93,6 @@ const login = async (req, res) => {
     }
 };
 
-const registerMail = async (req, res) => {
-    
-};
-
 const authenticate = async (req, res) => {
     res.end();
 };
@@ -223,7 +219,6 @@ const resetPassword = async (req, res) => {
 
 export  {
     register,
-    registerMail,
     authenticate,
     login,
     user,

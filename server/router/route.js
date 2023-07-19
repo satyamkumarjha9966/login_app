@@ -1,6 +1,7 @@
 import { Router } from "express";
-import {register, registerMail, authenticate, login, user, generateOTP, verifyOTP, createResetSession, updateuser, resetPassword, verifyUser} from '../controllers/appController.js'
+import {register, authenticate, login, user, generateOTP, verifyOTP, createResetSession, updateuser, resetPassword, verifyUser} from '../controllers/appController.js'
 import auth, {localVariables} from "../middleware/auth.js";
+import registerMail from "../controllers/mailer.js";
 const router = Router();
 
 // Post Methods
@@ -8,7 +9,7 @@ router.post('/register', register);
 
 router.post('/registerMail', registerMail);
 
-router.post('/authenticate', authenticate);
+router.post('/authenticate', verifyUser, authenticate);
 
 router.post('/login', verifyUser, login);
 

@@ -7,8 +7,13 @@ import { Toaster } from 'react-hot-toast';            // To make website intract
 import { useFormik } from 'formik';                   // For validation
 import { profilePageValidate } from "../helper/validate";
 import convertToBase64 from "../helper/convert";
+import useFetch from "../hooks/fetch.hook";
+import { useAuthStore } from "../store/store.js";
 
 export default function Profiles() {
+
+    const {username} = useAuthStore(state => state.auth);
+    const [{isLoading, apiData, serverError}] = useFetch(`/user/${username}`)
 
     const formik = useFormik({
         initialValues : {
@@ -36,6 +41,9 @@ export default function Profiles() {
         setFile(base64);
     };
 
+    if (isLoading) return <h1 className="text-2xl font-bold">isLoading</h1>;
+    if (serverError) return <h1 className="text-red-600 text-xl">{serverError.message}</h1>;
+
     return(
         <div className="container mx-auto">
             <Toaster position="top-center" reverseOrder={false}></Toaster>
@@ -51,7 +59,7 @@ export default function Profiles() {
                     <form className="py-1" onSubmit={formik.handleSubmit}>
                         <div className="profile flex justify-center py-4">
                             <label htmlFor="profile">
-                                <img src={file || Profile} className={style.profile_img} />
+                                <img src={apiData?.profile || file || Profile} className={style.profile_img} />
                             </label>
 
                             <input onChange={onUpload} type="file" id="profile" name="profile"/>

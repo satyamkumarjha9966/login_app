@@ -3,10 +3,7 @@ import axios from 'axios';
 // Specifie Backend Server Domain URL
 axios.defaults.baseURL = process.env.REACT_APP_SERVER_DOMAIN;
 
-
-// Make API Request
-
-
+// Making API Request
 
 // Authenticate Function
 export async function authenticate(username) {
@@ -30,7 +27,7 @@ export async function getUser({username}) {
 // Register user function
 export async function registerUser(credentials) {
     try {
-        const {data : {message}, status} = await axios.post(`/api/register`, credentials)
+        const {data : {message}, status} = await axios.post('/api/register', credentials)
 
         let {username, email} = credentials;
 

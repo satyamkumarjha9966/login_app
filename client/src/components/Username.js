@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Profile from "../assets/profile.png";
 import style from '../style/username.module.css';
 import { Toaster } from 'react-hot-toast';            // To make website intractive
@@ -9,6 +9,9 @@ import { useAuthStore } from "../store/store.js";
 
 export default function Username() {
 
+    const navigate = useNavigate();
+    const setUsername = useAuthStore(state => state.setUsername);
+
     const formik = useFormik({
         initialValues : {
             username : ""
@@ -17,7 +20,8 @@ export default function Username() {
         validateOnBlur : false,
         validateOnChange : false,
         onSubmit : async (values) => {
-            console.log(values);
+            setUsername(values.username);
+            navigate('/password');
         }
     })
 

@@ -1,12 +1,19 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Profile from "../assets/profile.png";
 import style from '../style/username.module.css';
-import { Toaster } from 'react-hot-toast';            // To make website intractive
+import toast, { Toaster } from 'react-hot-toast';            // To make website intractive
 import { useFormik } from 'formik';                   // For validation
 import { passwordValidate } from "../helper/validate";
+import useFetch from "../hooks/fetch.hook";
+import { useAuthStore } from "../store/store.js";
+import { verifyPassword } from "../helper/helper";
 
 export default function Password() {
+
+    const navigate = useNavigate();
+    const {username} = useAuthStore(state => state.auth);
+    const [{isLoading, apiData, serverError}] = useFetch(`/user/${username}`) 
 
     const formik = useFormik({
         initialValues : {
@@ -16,9 +23,24 @@ export default function Password() {
         validateOnBlur : false,
         validateOnChange : false,
         onSubmit : async (values) => {
-            console.log(values);
+            let loginPromise = verifyPassword({username, password: values.password})
+
+            toast.promise(loginPromise, {
+                loading: "Checking....",
+                success: <b>Login Successfully....</b>,
+                error: <b>Password Not Matched</b>
+            })
+
+            loginPromise.then(res => {
+                let {token} = res.data;
+                localStorage.setItem('token', token);
+                navigate('/profile')
+            })
         }
     })
+
+    if (isLoading) return <h1 className="text-2xl font-bold">isLoading</h1>;
+    if (serverError) return <h1 className="text-red-600 text-xl">{serverError.message}</h1>;
 
     return(
         <div className="container mx-auto">
@@ -26,7 +48,7 @@ export default function Password() {
             <duv className="flex justify-center items-center h-screen">
                 <div className={style.glass}>
                     <div className="title flex flex-col justify-center items-center">
-                        <h4 className="text-5xl font-bold">Hello Again!</h4>
+                        <h4 className="text-5xl font-bold">Hello {apiData?.firstname || apiData?.username}</h4>
                         <span className="py-4 text-xl w-2/3 text-center text-gray-500">
                             Explore More by Connecting with us.
                         </span>
@@ -34,7 +56,7 @@ export default function Password() {
 
                     <form className="py-1" onSubmit={formik.handleSubmit}>
                         <div className="profile flex justify-center py-4">
-                            <img className={style.profile_img} src={Profile} />
+                            <img className={style.profile_img} src={ apiData?.Profile || Profile} />
                         </div>
 
                         <div className="textbox flex justify-center items-center flex-col gap-6">

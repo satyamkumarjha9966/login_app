@@ -1,5 +1,9 @@
 import axios from 'axios';
 
+// Specifie Backend Server Domain URL
+axios.defaults.baseURL = process.env.REACT_APP_SERVER_DOMAIN;
+
+
 // Make API Request
 
 
@@ -61,5 +65,44 @@ export async function updateuser(response) {
         return Promise.resolve({data});
     } catch (error) {
         return Promise.reject("User Data Could Not Update");
+    }
+}
+
+// Generate OTP
+export async function generateOTP(username) {
+    try {
+        const {data : {code}, status} = await axios.get('/api/generateOTP', { params : { username } })
+
+        // Send Mail With OTP
+        if (status === 200) {
+            let {data: {email}} = await getUser({username});
+            let text = `Your Password Recovery OTP is ${code}. Verify and Recover Your Password.`
+            await axios.post('/api/registerMail', { username, userEmail: email, text, subject : "Password Recovery OTP"})
+        }
+
+        return Promise.resolve(code);
+
+    } catch (error) {
+        return Promise.reject({error})
+    }
+}
+
+// Verify OTP
+export async function verifyOTP({username, code}) {
+    try {
+        const {data, status} = await axios.get('/api/verifyOTP', {params : {username, code}})
+        return Promise.resolve({data, status});
+    } catch (error) {
+        return Promise.reject(error);
+    }
+}
+
+// Reset Password
+export async function resetPassword({username, password}) {
+    try {
+        const {data, status} = await axios.put('/api/resetPassword', {username, password});
+        return Promise.resolve({data, status});
+    } catch (error) {
+        return Promise.reject(error)
     }
 }

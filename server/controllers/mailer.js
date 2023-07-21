@@ -4,7 +4,7 @@ import ENV from '../config.js';
 
 export default async function registerMail(req, res) {
 
-    const { email, username } = req.body;
+    const { userEmail, username, text, subject } = req.body;
 
     let config = {
         service : 'gmail',
@@ -28,17 +28,8 @@ export default async function registerMail(req, res) {
     let response  = {
         body: {
             name : username,
-            intro: "Welcome to Login App! We are Excited to Serve Best Content ",
-            table: {
-                data: [
-                    {
-                        item: "Mail Generator Class",
-                        description: "This program for FSWD Student!",
-                        price: "FREE"
-                    }
-                ]
-            },
-            outro: "Need help and Have any Question Feel free to ASK with us!"
+            intro:  "Welcome to Login App! We are Excited to Serve Best Content ",
+            outro: text || "Need help and Have any Question Feel free to ASK with us!"
         }
     }
 
@@ -46,8 +37,8 @@ export default async function registerMail(req, res) {
 
     let message = {
         from: ENV.EMAIL,
-        to: email,
-        subject: "Registration Successfull",
+        to: userEmail,
+        subject: subject || "Signup Successfull",
         html: mail
     }
 

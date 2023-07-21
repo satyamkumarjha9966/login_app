@@ -5,6 +5,7 @@ import style from '../style/username.module.css';
 import { Toaster } from 'react-hot-toast';            // To make website intractive
 import { useFormik } from 'formik';                   // For validation
 import { usernameValidate } from "../helper/validate";
+import { useAuthStore } from "../store/store.js";
 
 export default function Username() {
 

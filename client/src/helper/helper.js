@@ -1,4 +1,5 @@
 import axios from 'axios';
+import jwt_decode from 'jwt-decode';     // To decode data from token 
 
 // Specifie Backend Server Domain URL
 axios.defaults.baseURL = process.env.REACT_APP_SERVER_DOMAIN;
@@ -12,6 +13,16 @@ export async function authenticate(username) {
     } catch (error) {
         return { error : "Username Does Not Exist"}
     }
+}
+
+// To get Username from Token
+export async function getUsername() {
+    const token = localStorage.getItem('token');
+
+    if (!token) return Promise.reject("Can Not Find Token")
+
+    let decode = jwt_decode(token);
+    return decode;
 }
 
 // Get User Details

@@ -3,32 +3,42 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import Profile from "../assets/profile.png";
 import style from '../style/username.module.css';
-import { Toaster } from 'react-hot-toast';            // To make website intractive
+import toast, { Toaster } from 'react-hot-toast';            // To make website intractive
 import { useFormik } from 'formik';                   // For validation
 import { profilePageValidate } from "../helper/validate";
 import convertToBase64 from "../helper/convert";
 import useFetch from "../hooks/fetch.hook";
-import { useAuthStore } from "../store/store.js";
+import { updateuser } from "../helper/helper";
+import { useNavigate } from "react-router-dom";
 
 export default function Profiles() {
 
-    const {username} = useAuthStore(state => state.auth);
-    const [{isLoading, apiData, serverError}] = useFetch(`/user/${username}`)
+    const [{isLoading, apiData, serverError}] = useFetch()
+    const navigate = useNavigate();
 
     const formik = useFormik({
         initialValues : {
-            firstname : "",
-            lastname : "",
-            email : "",
-            mobile: "",
-            address : ""
+            firstname : apiData?.firstname || "",
+            lastname : apiData?.lastname || "",
+            email : apiData?.email || "",
+            mobile: apiData?.mobile || "",
+            address : apiData?.address || ""
         },
+        enableReinitialize: true,
         validate: profilePageValidate,
         validateOnBlur : false,
         validateOnChange : false,
         onSubmit : async (values) => {
-            values = await Object.assign(values, {Profile : file || ''})
-            console.log(values);
+            values = await Object.assign(values, {Profile : file || apiData?.profile || ''})
+
+            let updatePromise = updateuser(values);
+
+            toast.promise(updatePromise, {
+                loading: "Updating....",
+                success: <b>Update Successfully....</b>,
+                error: <b>Could Not Update, Pls Try Again</b>
+            })
+            
         }
     })
 
@@ -40,6 +50,12 @@ export default function Profiles() {
         const base64 = await convertToBase64(e.target.files[0]);
         setFile(base64);
     };
+
+    // Logout Handler Function
+    function userLogout() {
+        localStorage.removeItem('token')
+        navigate('/')
+    }
 
     if (isLoading) return <h1 className="text-2xl font-bold">isLoading</h1>;
     if (serverError) return <h1 className="text-red-600 text-xl">{serverError.message}</h1>;
@@ -82,7 +98,7 @@ export default function Profiles() {
                         </div>
 
                         <div className="text-center py-4">
-                            <span>Comeback Later? <Link className="text-red-500 font-bold" to="/">Log Out</Link></span>
+                            <span>Comeback Later? <Link onClick={userLogout} className="text-red-500 font-bold" to="/">Log Out</Link></span>
                         </div>
                     </form>
                 </div>

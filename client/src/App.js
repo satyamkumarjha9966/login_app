@@ -10,6 +10,9 @@ import Register from "./components/Register";
 import Reset from "./components/Reset";
 import Username from "./components/Username";
 
+// Auth Middleware
+import { AuthorizeUser, ProtectRoute } from "./middleware/auth";
+
 // Root Routes
 const router = createBrowserRouter([
     {
@@ -22,7 +25,7 @@ const router = createBrowserRouter([
     },
     {
         path : '/password',
-        element : <Password></Password>
+        element : <ProtectRoute> <Password /> </ProtectRoute>
     },
     {
         path : '/reset',
@@ -34,7 +37,7 @@ const router = createBrowserRouter([
     },
     {
         path : '/profile',
-        element : <Profiles></Profiles>
+        element : <AuthorizeUser> <Profiles /> </AuthorizeUser>
     },
     {
         path : '*',

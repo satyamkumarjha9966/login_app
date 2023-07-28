@@ -1,10 +1,18 @@
 import React from "react";
 import style from '../style/username.module.css';
-import { Toaster } from 'react-hot-toast';            // To make website intractive
+import toast, { Toaster } from 'react-hot-toast';            // To make website intractive
 import { useFormik } from 'formik';                   // For validation
 import { resetPasswordValidation } from "../helper/validate";
+import { resetPassword } from "../helper/helper";
+import { useAuthStore } from "../store/store";
+import { useNavigate, Navigate } from "react-router-dom";
+import useFetch from "../hooks/fetch.hook";
 
 export default function Reset() {
+
+    const {username} = useAuthStore(state => state.auth);
+    const navigate = useNavigate();
+    const [{isLoading, status, apiData, serverError }] = useFetch('createResetSession')
 
     const formik = useFormik({
         initialValues : {
@@ -15,9 +23,26 @@ export default function Reset() {
         validateOnBlur : false,
         validateOnChange : false,
         onSubmit : async (values) => {
-            console.log(values);
+
+            let resetPromise = resetPassword({username,  password: values.password});
+
+            toast.promise(resetPromise, {
+                loading: "Updating..",
+                success: <b>Password Reset Successfully!</b>,
+                error: <b>Could Not Reset, Pls Try Again</b>
+            });
+
+            resetPromise.then(function () {
+                navigate('/')
+            })
         }
     })
+
+    if (isLoading) return <h1 className="text-2xl font-bold">isLoading</h1>;
+    if (serverError) return <h1 className="text-red-600 text-xl">{serverError.message}</h1>;
+    if (status !== 200) {
+        return <Navigate to={'/password'} replace={true}></Navigate>
+    }
 
     return(
         <div className="container mx-auto">

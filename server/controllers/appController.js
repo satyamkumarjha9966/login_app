@@ -148,10 +148,9 @@ const verifyOTP = async (req, res) => {
 
 const createResetSession = async (req, res) => {
     if (req.app.locals.resetSession) {
-        req.app.locals.resetSession = false    // allow access to this route only once
-        return res.status(200).send({message: "Access Granted"})
+        return res.status(200).send({flag: req.app.locals.resetSession})
     }
-    res.status(440).send({message: "Session Expired!"});
+    return res.status(440).send({error: "Session Expired!"});
 };
 
 // Put Methods

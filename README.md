@@ -56,3 +56,8 @@ The backend uses Mongoose as an Object-Document Mapper (ODM) to interact with th
 
 ## JWT, Email Validator, Dotenv, CORS, Cookie Parser, and Bcrypt: 
 JWT is utilized for generating and verifying tokens, Email Validator validates user email addresses, Dotenv manages environment variables, CORS enables cross-origin resource sharing, Cookie Parser handles cookies, and Bcrypt is employed for password hashing and salting.
+
+
+![Screenshot (389)](https://github.com/satyamkumarjha9966/login_app/assets/123254088/20415592-2621-477e-9623-37237c4b6232)
+![Screenshot (388)](https://github.com/satyamkumarjha9966/login_app/assets/123254088/58f04845-222d-463d-a8dc-7a79c72e6a6b)
+

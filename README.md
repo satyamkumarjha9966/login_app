@@ -43,6 +43,8 @@ The backend provides API endpoints for updating user information, including prof
 ## Get Profile API: 
 The backend has an API endpoint to fetch user profile information based on the JWT token.
 
+# Essential Packages:
+
 ## Nodemon and Morgan: 
 Nodemon is used in the development environment to automatically restart the server upon changes, while Morgan logs HTTP requests for debugging purposes.
 
